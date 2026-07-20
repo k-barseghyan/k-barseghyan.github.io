@@ -49,7 +49,7 @@
     <nav class="container nav" aria-label="Primary navigation">
       <a class="brand" href="#top">Karen Barseghyan</a>
       <div class="nav-links">
-        <a href="#about">About</a>
+        <a href="#journey">Journey</a>
         <a href="#projects">Projects</a>
         <a href="#experiments">Experiments</a>
         <a href="#articles">Articles</a>
@@ -63,8 +63,8 @@
       <p class="eyebrow">Senior Java Software Engineer</p>
       <h2>Distributed systems, concurrency, and production backend engineering.</h2>
       <p class="lead">
-        I build cloud-based and performance-critical backend systems with Java,
-        Spring Boot, messaging, data platforms, and AWS.
+        Based in Yerevan, Armenia, I build cloud-based and performance-critical
+        backend systems with Java, Spring Boot, messaging, data platforms, and AWS.
         I also create and maintain open-source Java libraries through the j-util initiative.
       </p>
       <div class="actions">
@@ -75,19 +75,243 @@
       </div>
     </section>
 
-    <section id="about" class="section container">
-      <h2>About</h2>
-      <p>
-        I am a Senior Java Software Engineer based in Yerevan, Armenia, with more
-        than nine years of software-engineering experience. My work includes
-        distributed services, event-driven systems, cloud infrastructure,
-        database performance, production reliability, and financial-market systems.
+    <section id="journey" class="section container journey">
+      <p class="eyebrow">Career journey</p>
+      <h2>From business systems to distributed systems</h2>
+      <p class="journey-intro">
+        My path into software was gradual: business systems came first, professional
+        programming later, and the same structural way of thinking connected both.
       </p>
-      <p>
-        Before moving into software engineering, I held financial leadership roles.
-        That background gives me practical domain knowledge in accounting, reporting,
-        budgeting, financial operations, and commercially critical systems.
-      </p>
+
+      <div class="journey-body">
+        <div class="journey-chapter">
+          <h3>Before software was my profession</h3>
+          <p>
+            My first program was an airplane drawn with BASIC at school. At university,
+            I encountered Visual Basic and Microsoft Access. Later, during my accounting
+            career, Excel, enterprise accounting systems, and ERP platforms became everyday tools.
+          </p>
+          <p>
+            Although “software developer” was not yet my title, I regularly worked with
+            programmers as the business-side domain expert. I could explain processes,
+            rules, exceptions, and expected results clearly enough to get unusually good
+            outcomes. Looking back, I was already doing a form of domain modelling:
+            turning real operations into data, rules, and system behaviour.
+          </p>
+        </div>
+
+        <div class="journey-chapter">
+          <h3>The first real application</h3>
+          <p>
+            My first substantial application was built with three friends using Java Swing
+            and MySQL. Our practical knowledge was limited, but we were responsible enough
+            to make the system work.
+          </p>
+          <p>
+            It managed a gym: member registration, tariff plans, barcode-based attendance,
+            reports, cash, and debt. My main responsibility was the relational database
+            design. Normalisation felt unexpectedly natural—possibly because accounting
+            had trained me to think about consistency and relationships, or simply because
+            structural thinking had always suited me.
+          </p>
+          <p>
+            The application ran locally, as required, and remained in real use for several
+            years. It was not sophisticated by later standards, but it taught me something
+            important: useful software begins with understanding the domain and accepting
+            responsibility for the result.
+          </p>
+        </div>
+
+        <div class="journey-chapter">
+          <h3>Learning through unfamiliar technologies</h3>
+          <p>
+            My first professional software role was at DataFoundry AI, working on a platform
+            for a US-based medical-research technology company. I entered a genuinely
+            polyglot environment: Clojure, Java, Python, Pandas, Amazon Redshift, AWS Lambda,
+            and AWS Batch.
+          </p>
+          <p>
+            Clojure introduced me to Lisp and functional programming. Its elegance was
+            striking, but so was its difficulty. The smaller ecosystem made finding answers
+            harder and forced deeper independent reasoning.
+          </p>
+          <p>
+            My most important contribution there was a Redshift optimisation. A multi-tenant
+            endpoint took approximately one minute to respond. I redistributed related tables
+            using the study identifier shared by the data and queries, then introduced an
+            appropriate sort key for another frequently used identifier. Response time fell
+            to roughly 400 milliseconds.
+          </p>
+          <p>
+            Another early engagement took me into C# and .NET modernisation. I worked with
+            Redis-based coordination and designed a configurable logging abstraction supporting
+            files, a database, and Windows Event Log. Even then, I was drawn to separating
+            application responsibilities from concrete infrastructure.
+          </p>
+        </div>
+
+        <div class="journey-chapter">
+          <h3>The DataArt years</h3>
+          <p>
+            At DataArt, the variety and scale of systems increased quickly.
+          </p>
+          <p>
+            On a US-based cross-border employment platform, I worked with Java 14, jOOQ,
+            and Firebase. The system was a well-designed monolith. It taught me an enduring
+            lesson: architectural quality is not determined by whether a system is a monolith
+            or a collection of microservices. jOOQ also showed me how elegant a type-safe,
+            SQL-oriented persistence layer could be.
+          </p>
+          <p>
+            For a UK financial-markets infrastructure company, I worked on a
+            performance-critical data-processing system using RxJava and Kafka. Data passed
+            through multiple stages of normalisation and validation before reaching Cassandra
+            and Neo4j. I improved Neo4j persistence with Cypher <code>MERGE</code>-based
+            operations, reducing database round trips while eliminating duplicate metadata
+            observed in the existing flow. This was also where I discovered how naturally
+            Cypher expresses relationships that are awkward to represent through relational joins.
+          </p>
+          <p>
+            On another large UK financial-markets platform, I worked with complex
+            trading-room permissions while a service was being decomposed into several
+            microservices. The architecture included Kafka, the transactional outbox pattern,
+            Feign clients, PostgreSQL, and Liquibase.
+          </p>
+          <p>
+            Two initiatives from that project remain particularly important to me. First,
+            I designed the database schema migration to work both against populated development
+            and QA environments and against a completely empty environment. Preserving existing
+            databases had not been required, but I wanted the transition to be non-destructive.
+            The same Liquibase migration path successfully handled both brownfield upgrades
+            and clean deployments.
+          </p>
+          <p>
+            Second, I built audit reporting over trigger-maintained version-history tables.
+            Repeated business keys made ordinary joins produce misleading duplicates, so the
+            data had to be reconstructed through version-aware joins. The resulting audit
+            history was exported as an Excel workbook using Apache POI and returned to the frontend.
+          </p>
+        </div>
+
+        <div class="journey-chapter">
+          <h3>Workflows with a visible human consequence</h3>
+          <p>
+            For a major US online travel platform, I helped migrate booking processes from
+            a large Java 8 monolith into a Camunda-orchestrated service architecture.
+          </p>
+          <p>
+            The new system separated long-running workflows from decision logic. Business
+            rules were composed from reusable predicates, and each migrated process was
+            introduced gradually: a small portion of production traffic went to the new
+            implementation before the full cutover. This was my practical introduction to
+            workflow orchestration, composable rules, and progressive delivery.
+          </p>
+          <p class="journey-highlight">
+            One process remains especially meaningful to me: wheelchair-assistance requests
+            for air travellers. It was one workflow among many inside a shared reservation
+            backend serving several global travel brands, but it made the human effect of
+            backend software tangible. Somewhere downstream, the process I helped migrate
+            contributed to a traveller receiving the assistance they needed at an airport.
+          </p>
+        </div>
+
+        <div class="journey-chapter">
+          <h3>Integrating and modernising live platforms</h3>
+          <p>
+            For a global online betting and gaming group, I first worked on a difficult
+            post-acquisition integration. Two large systems had to operate together while
+            mandatory capabilities from the acquired platform—particularly bonus calculation
+            and management—remained in place. Their separate identity systems also had to
+            be federated.
+          </p>
+          <p>
+            The surrounding product used one shared codebase but was deployed independently
+            for multiple customers. Every change required strict cross-client compatibility
+            review. It taught me to think beyond “making a feature work” and instead design
+            capabilities that belonged safely in a shared product.
+          </p>
+          <p>
+            I later worked on a real-time sports-data platform. Provider adapters fetched
+            external feeds, validated and normalised them into a canonical model, and
+            published them through ActiveMQ Artemis. A core service performed further
+            transformations, persisted data in MySQL, and supplied downstream systems.
+          </p>
+          <p>
+            My work included a provider integration, concurrency and resource-correctness
+            fixes, database connection-pool corrections, documentation, and the modernisation
+            of multiple services from Java 8 to Java 21 and Spring Boot 2 to 3. I also reduced
+            unnecessary Hazelcast coupling, prepared the platform for Kafka, and introduced
+            a configurable cache abstraction designed to support Hazelcast and Redis-compatible
+            implementations without changing business code.
+          </p>
+        </div>
+
+        <div class="journey-chapter">
+          <h3>Building independently</h3>
+          <p>
+            Outside client work, I build systems around questions that interest me.
+          </p>
+          <p>
+            <code>dtrd</code> is my Java trading-engine project. It lets me work directly
+            with real-time market data, WebSocket streams, ring buffers, broker-independent
+            boundaries, timing constraints, concurrency, and risk controls. Its public value
+            is the engineering—not private strategies or trading results.
+          </p>
+          <p>
+            Through the j-util open-source initiative, I design and publish focused Java
+            libraries to Maven Central. <a href="https://github.com/j-util/splice-list">splice-list</a>
+            explores O(1) list concatenation through structural splicing.
+            <a href="https://github.com/j-util/inputstream-processor-core">inputstream-processor-core</a>
+            processes items incrementally without materialising an entire input first.
+            <a href="https://github.com/j-util/optional-map">optional-map</a> is deliberately
+            smaller and more playful: an idea implemented for the pleasure of exploring it properly.
+          </p>
+        </div>
+
+        <div class="journey-chapter">
+          <h3>Going below the abstraction</h3>
+          <p>
+            I have rarely been satisfied with knowing only how to use an API or framework.
+            When a subject matters, I keep following it downward: from concurrent code to
+            memory visibility and synchronization algorithms, from data structures to CPU
+            caches and locality, and from distributed behaviour to the reasoning that makes
+            it correct.
+          </p>
+          <p>
+            This habit often takes me beyond the immediate requirements of a project. The
+            purpose is not technical depth for its own sake, but to build mental models that
+            remain useful when technologies change.
+          </p>
+          <p>
+            During self-directed learning, I began looking beyond popular programming books
+            toward the papers and lectures of the computer scientists who established the
+            foundations. Leslie Lamport became a particularly important influence. His
+            conviction that programming begins with precise thinking—understanding and
+            specifying what a system must do before expressing it in code—felt less like a
+            new method and more like a formal articulation of how I had always approached problems.
+          </p>
+        </div>
+
+        <div class="journey-chapter">
+          <h3>What connects the journey</h3>
+          <p>
+            Across these systems, I have worked through the main layers of modern backend
+            engineering: application logic, workflows, messaging, caching, relational and
+            graph storage, analytical databases, cloud infrastructure, and production delivery.
+          </p>
+          <p>
+            The technologies changed, but their responsibilities repeated. Understanding
+            those boundaries has allowed me to move between alternatives without beginning
+            from zero each time.
+          </p>
+          <p>
+            The common thread is structural thinking: modelling a domain carefully,
+            preserving correctness under concurrency and change, improving performance where
+            it matters, and making difficult transitions safe for the people and systems
+            already depending on the software.
+          </p>
+        </div>
+      </div>
     </section>
 
     <section id="projects" class="section container">
