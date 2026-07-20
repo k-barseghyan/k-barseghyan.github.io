@@ -124,14 +124,12 @@
         <article class="card">
           <h3>inputstream-processor-core</h3>
           <p>
-            A dependency-free core for processing items from an
-            <code>InputStream</code> incrementally without materializing the
-            entire content.
+            A protocol- and format-agnostic Java core for incremental item processing,
+            with bounded-memory potential and lower time-to-first-item.
           </p>
           <div class="card-links">
             <a href="https://github.com/j-util/inputstream-processor-core">GitHub</a>
             <a href="https://central.sonatype.com/artifact/io.github.j-util/inputstream-processor-core">Maven</a>
-            <a href="articles/incremental-inputstream-processing.html">Article</a>
           </div>
         </article>
 
@@ -158,10 +156,10 @@
 
       <article class="writing-card">
         <p class="article-meta">July 20, 2026 · Java streaming</p>
-        <h3><a href="articles/incremental-inputstream-processing.html">Incremental InputStream Processing in Java</a></h3>
+        <h3><a href="articles/incremental-inputstream-processing.html">Protocol- and Format-Agnostic InputStream Processing in Java</a></h3>
         <p>
-          How a format-neutral core separates parsing, item consumption, failure policy,
-          and stream ownership without materializing the complete input.
+          How incremental emission can lower memory retention and time-to-first-item
+          while keeping protocol, format, ownership, and failure policy outside the core.
         </p>
         <a class="read-more" href="articles/incremental-inputstream-processing.html">Read article</a>
       </article>
