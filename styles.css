@@ -47,7 +47,7 @@ a {
 
 .nav {
   display: flex;
-  min-height: 64px;
+  min-height: 76px;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -55,7 +55,10 @@ a {
 
 .brand {
   color: var(--text);
-  font-weight: 700;
+  font-size: clamp(1.28rem, 2.2vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
   text-decoration: none;
 }
 
@@ -270,6 +273,63 @@ h3 {
   padding-bottom: 5rem;
 }
 
+.contact-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.contact-link:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.contact-link:focus-visible {
+  outline: 3px solid rgba(31, 79, 122, 0.25);
+  outline-offset: 3px;
+}
+
+.contact-icon {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  fill: var(--accent);
+}
+
+.contact-link span {
+  min-width: 0;
+}
+
+.contact-link strong,
+.contact-link small {
+  display: block;
+}
+
+.contact-link strong {
+  font-size: 1rem;
+}
+
+.contact-link small {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .footer {
   padding-block: 1.5rem 3rem;
   color: var(--muted);
@@ -300,7 +360,7 @@ pre code {
   .nav {
     align-items: flex-start;
     flex-direction: column;
-    padding-block: 0.8rem;
+    padding-block: 0.9rem;
   }
 
   .nav-links {
@@ -317,5 +377,9 @@ pre code {
 
   .article-page {
     padding-block: 3.5rem;
+  }
+
+  .contact-links {
+    grid-template-columns: 1fr;
   }
 }
