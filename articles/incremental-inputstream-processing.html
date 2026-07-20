@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Incremental InputStream Processing in Java — Karen Barseghyan</title>
+  <meta name="description" content="How inputstream-processor-core separates format parsing, item consumption, failure policy, and stream ownership for incremental Java InputStream processing.">
+  <meta name="author" content="Karen Barseghyan">
+  <link rel="canonical" href="https://k-barseghyan.github.io/articles/incremental-inputstream-processing.html">
+  <link rel="stylesheet" href="../styles.css">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Incremental InputStream Processing in Java">
+  <meta property="og:description" content="A small format-neutral Java core that separates parsing, consumption, failure policy, and stream ownership.">
+  <meta property="og:url" content="https://k-barseghyan.github.io/articles/incremental-inputstream-processing.html">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Incremental InputStream Processing in Java",
+    "description": "How inputstream-processor-core separates format parsing, item consumption, failure policy, and stream ownership for incremental Java InputStream processing.",
+    "datePublished": "2026-07-20",
+    "dateModified": "2026-07-20",
+    "author": {
+      "@type": "Person",
+      "name": "Karen Barseghyan",
+      "url": "https://k-barseghyan.github.io/"
+    },
+    "mainEntityOfPage": "https://k-barseghyan.github.io/articles/incremental-inputstream-processing.html",
+    "keywords": [
+      "Java",
+      "InputStream",
+      "incremental processing",
+      "streaming",
+      "bounded memory",
+      "parser design",
+      "inputstream-processor-core"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="container nav" aria-label="Primary navigation">
+      <a class="brand" href="../index.html">Karen Barseghyan</a>
+      <div class="nav-links">
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#projects">Projects</a>
+        <a href="../index.html#articles">Articles</a>
+        <a href="../index.html#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <article class="article-page container">
+      <header class="article-header">
+        <p class="eyebrow">Java streaming</p>
+        <h1>Incremental InputStream Processing in Java</h1>
+        <p class="article-subtitle">
+          Separating format parsing, item processing, failure policy, and stream ownership in a small dependency-free core.
+        </p>
+        <p class="article-meta">Karen Barseghyan · July 20, 2026</p>
+      </header>
+
+      <div class="article-body">
+        <p>
+          Large HTTP responses and files are often processed through a simple but expensive pattern:
+          read the complete content, deserialize it into a collection, and only then begin handling the items.
+        </p>
+        <p>
+          That model is convenient, but it couples three separate concerns: reading the transport stream,
+          understanding the data format, and executing application logic. It also delays the first useful result
+          and may retain far more data than the application actually needs.
+        </p>
+
+        <h2>The abstraction</h2>
+        <p>
+          Incremental processing means that a parser reads from an <code>InputStream</code>, recognizes one logical item,
+          emits it immediately, and then continues reading. The client can process the first item before the complete input
+          has arrived or been parsed.
+        </p>
+        <p>
+          The core should not need to know whether the stream contains JSON objects, CSV rows, XML elements, text lines,
+          or a custom binary format. Those are parsing concerns, not processing concerns.
+        </p>
+
+        <h2>Three responsibility boundaries</h2>
+        <p>
+          <code>inputstream-processor-core</code> separates the flow into three roles:
+        </p>
+        <ol>
+          <li>
+            <strong><code>InputParser&lt;T&gt;</code></strong> understands the input format and emits logical items as they become available.
+          </li>
+          <li>
+            <strong><code>InputStreamProcessor&lt;T&gt;</code></strong> connects the parser to the client consumer and counts successful consumer calls.
+          </li>
+          <li>
+            <strong><code>Consumer&lt;? super T&gt;</code></strong> performs the application-specific action and owns the business failure policy.
+          </li>
+        </ol>
+        <p>
+          The processor does not deserialize JSON, interpret CSV columns, persist entities, retry failed business operations,
+          or decide which exceptions are recoverable. Each responsibility remains with the component that has enough context
+          to make that decision correctly.
+        </p>
+
+        <h2>The core API</h2>
+        <p>
+          The parser is a functional interface:
+        </p>
+
+        <pre><code>@FunctionalInterface
+public interface InputParser&lt;T&gt; {
+    void parse(
+            InputStream input,
+            Consumer&lt;? super T&gt; emitter
+    ) throws IOException;
+}</code></pre>
+
+        <p>
+          A processor is configured with one parser and then connects it to a client consumer:
+        </p>
+
+        <pre><code>InputStreamProcessor&lt;String&gt; processor =
+        new InputStreamProcessor&lt;&gt;(parser);
+
+try (InputStream input = Files.newInputStream(path)) {
+    ProcessingResult result = processor.process(
+            input,
+            System.out::println
+    );
+
+    System.out.println(result.getProcessedCount());
+}</code></pre>
+
+        <p>
+          The core has no third-party runtime dependencies and supports Java 8 or later.
+        </p>
+
+        <h2>A line-oriented parser</h2>
+        <p>
+          For a plain-text stream, the parser can emit each line immediately:
+        </p>
+
+        <pre><code>InputParser&lt;String&gt; parser = (input, emit) -&gt; {
+    BufferedReader reader = new BufferedReader(
+            new InputStreamReader(input, StandardCharsets.UTF_8)
+    );
+
+    String line;
+    while ((line = reader.readLine()) != null) {
+        emit.accept(line);
+    }
+};</code></pre>
+
+        <p>
+          The same contract can be implemented with Jackson's streaming API, a CSV parser, an XML pull parser,
+          or a domain-specific decoder. Those integrations remain outside the core artifact so applications can
+          choose their own format libraries and versions.
+        </p>
+
+        <h2>What “incremental” actually guarantees</h2>
+        <p>
+          The processor itself never materializes the complete input or stores the complete sequence of emitted items.
+          However, bounded-memory behavior still depends on the parser. A parser that reads the whole stream into memory
+          before emitting anything defeats the incremental model even though it implements the same interface.
+        </p>
+        <p>
+          The responsibility boundary is therefore precise:
+        </p>
+        <ul>
+          <li>The core guarantees that it does not accumulate the input or emitted sequence.</li>
+          <li>The parser is responsible for reading and emitting incrementally.</li>
+          <li>The consumer is responsible for not retaining items unnecessarily.</li>
+        </ul>
+
+        <h2>Failure semantics</h2>
+        <p>
+          Parser and consumer exceptions propagate unchanged and terminate processing. The core does not catch, wrap,
+          classify, or silently skip them.
+        </p>
+        <p>
+          The processed count is incremented only after a consumer call returns normally. If a later item fails,
+          previously completed consumer calls remain completed; there is no rollback, and no <code>ProcessingResult</code>
+          is returned from the failed invocation.
+        </p>
+        <p>
+          This may look minimal, but it keeps policy in the correct place. A JSON parser may know whether malformed input
+          is recoverable. A business consumer may know whether an item should be skipped, retried, sent to a dead-letter queue,
+          or allowed to stop the stream. The format-neutral core cannot make those decisions safely.
+        </p>
+
+        <h2>Stream ownership</h2>
+        <p>
+          The caller owns the supplied <code>InputStream</code>. Neither the processor nor the parser may close it.
+          This makes the lifecycle explicit and prevents a nested reader or parser from unexpectedly closing a stream
+          managed by an HTTP client, archive reader, or surrounding resource scope.
+        </p>
+        <p>
+          The normal usage pattern is therefore a caller-controlled <code>try</code>-with-resources block around
+          <code>process(...)</code>.
+        </p>
+
+        <h2>Execution and concurrency</h2>
+        <p>
+          Version 1 is synchronous and blocking. The parser emits items during its <code>parse(...)</code> call,
+          and every consumer invocation completes before processing continues.
+        </p>
+        <p>
+          <code>InputStreamProcessor</code> is immutable, but safe concurrent reuse depends on the configured parser
+          being thread-safe. Separate processing operations also require separate <code>InputStream</code> instances.
+          Reactive processing, asynchronous emission, and internal parallelism are deliberately outside this core contract.
+        </p>
+
+        <h2>Why keep the core small?</h2>
+        <p>
+          A library that directly bundles JSON, CSV, XML, HTTP clients, retries, concurrency, and persistence would provide
+          more features, but it would also own more policies, dependencies, and compatibility constraints.
+        </p>
+        <p>
+          The smaller design provides one stable mechanism: connect an incremental parser to an item consumer while preserving
+          clear ownership and failure semantics. Format-aware adapters can be layered on top without changing that core contract.
+        </p>
+
+        <h2>The broader design lesson</h2>
+        <p>
+          Streaming is not only about replacing a byte array with an <code>InputStream</code>. A useful streaming abstraction
+          must establish who recognizes item boundaries, who owns the input resource, when an item counts as processed,
+          and where failure policy belongs.
+        </p>
+        <p>
+          The implementation can remain small when those boundaries are explicit.
+        </p>
+
+        <p class="article-reference">
+          <strong>Project:</strong>
+          <a href="https://github.com/j-util/inputstream-processor-core">inputstream-processor-core on GitHub</a> ·
+          <a href="https://central.sonatype.com/artifact/io.github.j-util/inputstream-processor-core">Maven Central</a>
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="container footer">
+    <p>© <span id="year"></span> Karen Barseghyan</p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
