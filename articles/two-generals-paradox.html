@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Two Generals Paradox — Karen Barseghyan</title>
+  <meta name="description" content="Why no finite exchange of acknowledgements can create perfect certainty over an unreliable network, and how distributed systems manage the resulting uncertainty.">
+  <meta name="author" content="Karen Barseghyan">
+  <link rel="canonical" href="https://k-barseghyan.github.io/articles/two-generals-paradox.html">
+  <link rel="stylesheet" href="../styles.css">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The Two Generals Paradox">
+  <meta property="og:description" content="Why distributed systems cannot eliminate uncertainty over unreliable communication.">
+  <meta property="og:url" content="https://k-barseghyan.github.io/articles/two-generals-paradox.html">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "The Two Generals Paradox",
+    "description": "Why no finite exchange of acknowledgements can create perfect certainty over an unreliable network, and how distributed systems manage the resulting uncertainty.",
+    "datePublished": "2026-06-04",
+    "dateModified": "2026-07-20",
+    "author": {
+      "@type": "Person",
+      "name": "Karen Barseghyan",
+      "url": "https://k-barseghyan.github.io/"
+    },
+    "mainEntityOfPage": "https://k-barseghyan.github.io/articles/two-generals-paradox.html",
+    "keywords": [
+      "distributed systems",
+      "Two Generals Problem",
+      "Coordinated Attack Problem",
+      "idempotency",
+      "retries",
+      "message delivery"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="container nav" aria-label="Primary navigation">
+      <a class="brand" href="../index.html">Karen Barseghyan</a>
+      <div class="nav-links">
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#projects">Projects</a>
+        <a href="../index.html#articles">Articles</a>
+        <a href="../index.html#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <article class="article-page container">
+      <header class="article-header">
+        <p class="eyebrow">Distributed systems</p>
+        <h1>The Two Generals Paradox</h1>
+        <p class="article-subtitle">
+          Why no protocol can eliminate uncertainty when communication may fail.
+        </p>
+        <p class="article-meta">Karen Barseghyan · June 4, 2026</p>
+      </header>
+
+      <div class="article-body">
+        <p>
+          Before distributed systems had servers, brokers, databases, and cloud regions,
+          the fundamental coordination problem could already be described with two armies
+          and an unreliable messenger.
+        </p>
+
+        <h2>The problem</h2>
+        <p>
+          Two generals are positioned on opposite sides of a city. They can win only if
+          both armies attack at the same time. If one attacks alone, that army will be defeated.
+        </p>
+        <p>
+          Their only communication channel is a messenger who must cross hostile territory.
+          The messenger may arrive, or may be captured without either general knowing what happened.
+        </p>
+        <p>
+          General A sends: “Attack at dawn.” General B receives the message and replies:
+          “Confirmed.” But now B does not know whether the confirmation reached A.
+          A can acknowledge B’s confirmation, but then A does not know whether that new
+          acknowledgement reached B.
+        </p>
+        <p>
+          Every additional confirmation creates another final message whose delivery remains uncertain.
+        </p>
+
+        <h2>The impossibility</h2>
+        <p>
+          No finite message exchange can create perfect common certainty when any message may be lost.
+          Assume a protocol succeeds after a finite number of messages. Its final message must be necessary;
+          otherwise it could be removed. But if that final message is lost, the required shared certainty is
+          not established. Adding another acknowledgement only moves the same uncertainty to a new final message.
+        </p>
+        <p>
+          This is not a missing algorithm waiting to be invented. Under the stated assumptions,
+          the uncertainty cannot disappear.
+        </p>
+
+        <h2>The software version</h2>
+        <p>
+          Consider a client sending a payment request:
+        </p>
+        <ol>
+          <li>The server receives the request.</li>
+          <li>The server commits the payment.</li>
+          <li>The response is lost or the connection fails.</li>
+          <li>The client observes a timeout.</li>
+        </ol>
+        <p>
+          The client cannot distinguish between two materially different outcomes:
+        </p>
+        <ul>
+          <li>The server never processed the request.</li>
+          <li>The server processed it, but the response did not arrive.</li>
+        </ul>
+        <p>
+          A retry may be necessary, but an unsafe retry may execute the payment twice.
+          TCP can provide an ordered and reliable byte stream while the connection remains usable;
+          it cannot prove the final business outcome after communication becomes ambiguous.
+        </p>
+
+        <h2>How real systems manage it</h2>
+        <p>
+          Production systems do not solve the paradox. They design around it using explicit guarantees
+          and recovery mechanisms:
+        </p>
+        <ul>
+          <li><strong>Idempotency keys</strong> make repeated requests represent one logical operation.</li>
+          <li><strong>Deduplication</strong> identifies requests or messages already processed.</li>
+          <li><strong>Durable status records</strong> let clients query the outcome after a timeout.</li>
+          <li><strong>Retries with backoff</strong> handle transient failures without uncontrolled load.</li>
+          <li><strong>Reconciliation</strong> detects and repairs differences that remain after partial failures.</li>
+        </ul>
+        <p>
+          These mechanisms do not create absolute knowledge. They reduce the operational risk and make
+          uncertain outcomes safe to revisit.
+        </p>
+
+        <h2>The engineering lesson</h2>
+        <p>
+          Reliable distributed systems are not systems in which uncertainty never occurs. They are systems
+          whose contracts, state transitions, and recovery procedures remain correct when uncertainty occurs.
+        </p>
+        <p>
+          We made it rare enough, controlled enough, and hidden enough that most users never notice it.
+        </p>
+
+        <p class="article-reference">
+          The impossibility argument appeared in
+          <a href="https://doi.org/10.1145/800213.806523">Some Constraints and Tradeoffs in the Design of Network Communications</a>
+          by E. A. Akkoyunlu, K. Ekanadham, and R. V. Huber in 1975. The scenario is also known as the
+          Coordinated Attack Problem.
+        </p>
+
+        <p class="article-origin">
+          <a href="https://www.linkedin.com/posts/karenbarseghyan_two-generals-paradox-before-distributed-share-7468372894121816064-y2Nk/?utm_source=share&amp;utm_medium=member_desktop&amp;rcm=ACoAAAa-OIIB1QdCDl6TmmKfLZCe9K5zQ2ydsH4">View the original LinkedIn post</a>
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="container footer">
+    <p>© <span id="year"></span> Karen Barseghyan</p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
