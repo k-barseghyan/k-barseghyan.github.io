@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why LinkedList.addAll Is Not O(1) — Karen Barseghyan</title>
+  <meta name="description" content="Why Java LinkedList.addAll copies elements, why constant-time concatenation requires destructive ownership transfer, and how splice-list exposes that operation explicitly.">
+  <meta name="author" content="Karen Barseghyan">
+  <link rel="canonical" href="https://k-barseghyan.github.io/articles/java-list-splicing.html">
+  <link rel="stylesheet" href="../styles.css">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Why LinkedList.addAll Is Not O(1)—and What Explicit Splicing Changes">
+  <meta property="og:description" content="A Java collection design discussion about copying, structural transfer, ownership, and constant-time whole-list splicing.">
+  <meta property="og:url" content="https://k-barseghyan.github.io/articles/java-list-splicing.html">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Why LinkedList.addAll Is Not O(1)—and What Explicit Splicing Changes",
+    "description": "Why Java LinkedList.addAll copies elements, why constant-time concatenation requires destructive ownership transfer, and how splice-list exposes that operation explicitly.",
+    "datePublished": "2026-07-13",
+    "dateModified": "2026-07-20",
+    "author": {
+      "@type": "Person",
+      "name": "Karen Barseghyan",
+      "url": "https://k-barseghyan.github.io/"
+    },
+    "mainEntityOfPage": "https://k-barseghyan.github.io/articles/java-list-splicing.html",
+    "keywords": [
+      "Java",
+      "LinkedList",
+      "List.addAll",
+      "splice-list",
+      "list splicing",
+      "data structures",
+      "algorithmic complexity"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="container nav" aria-label="Primary navigation">
+      <a class="brand" href="../index.html">Karen Barseghyan</a>
+      <div class="nav-links">
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#projects">Projects</a>
+        <a href="../index.html#articles">Articles</a>
+        <a href="../index.html#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <article class="article-page container">
+      <header class="article-header">
+        <p class="eyebrow">Java collections</p>
+        <h1>Why LinkedList.addAll Is Not O(1)—and What Explicit Splicing Changes</h1>
+        <p class="article-subtitle">
+          Constant-time concatenation is possible, but only when the API makes structural ownership transfer explicit.
+        </p>
+        <p class="article-meta">Karen Barseghyan · July 13, 2026</p>
+      </header>
+
+      <div class="article-body">
+        <p>
+          Years ago, as a junior Java developer, I expected concatenating two linked lists to be a constant-time operation.
+          A linked list already has a tail, the other list has a head, so why not connect the two structures directly?
+        </p>
+        <p>
+          The data-structure intuition was reasonable. The assumption about the <code>List</code> contract was not.
+        </p>
+
+        <h2>The apparent mismatch</h2>
+        <p>
+          For two compatible doubly linked lists, the pointer work required to join them is small and fixed:
+        </p>
+        <ol>
+          <li>Connect the target tail to the source head.</li>
+          <li>Connect the source head back to the target tail.</li>
+          <li>Move the target tail reference to the source tail.</li>
+          <li>Update the sizes.</li>
+        </ol>
+        <p>
+          None of those steps depends on the number of elements in the source list. Structurally, this is O(1).
+        </p>
+        <p>
+          Yet Java's normal <code>addAll(Collection)</code> operation processes the source sequence element by element.
+          For <code>n</code> inserted elements, the work is O(n).
+        </p>
+
+        <h2>The missing distinction: copying versus transfer</h2>
+        <p>
+          The important difference is semantic, not merely algorithmic.
+        </p>
+        <p>
+          <code>addAll</code> is a copying-style collection operation. After the call, the source collection must still contain
+          its elements. It also accepts any compatible <code>Collection</code>, not only another list with an internal node
+          representation that can be attached directly.
+        </p>
+        <p>
+          A linked node cannot safely belong to two independently mutable lists at the same time. If both lists retained the
+          same nodes, changing one list could corrupt the other list's structure, size, iteration, or ownership assumptions.
+        </p>
+        <p>
+          Therefore, true O(1) concatenation requires a different contract: transfer the source list's internal structure to
+          the target and leave the source empty.
+        </p>
+
+        <h2>Make the destructive operation explicit</h2>
+        <p>
+          This is what <code>splice-list</code> models. It remains compatible with the Java <code>List</code> abstraction for
+          ordinary operations, while exposing separate methods for structural whole-list transfer:
+        </p>
+
+        <pre><code>SpliceList&lt;String&gt; target = SpliceList.of("a");
+SpliceList&lt;String&gt; source = SpliceList.of("b", "c");
+
+target.spliceTail(source);
+
+// target: ["a", "b", "c"]
+// source: []</code></pre>
+
+        <p>
+          The method name communicates that this is not ordinary <code>addAll</code>. The source is consumed because its nodes
+          have moved into the target list.
+        </p>
+        <p>
+          The library also provides <code>spliceHead</code> for prepending a whole list. Both operations are O(1), independent
+          of the number of transferred elements.
+        </p>
+
+        <h2>Normal List behavior remains normal</h2>
+        <p>
+          When callers need non-destructive behavior, they still use <code>addAll</code>:
+        </p>
+
+        <pre><code>SpliceList&lt;String&gt; target = SpliceList.of("a");
+SpliceList&lt;String&gt; source = SpliceList.of("b", "c");
+
+target.addAll(source);
+
+// target: ["a", "b", "c"]
+// source: ["b", "c"]</code></pre>
+
+        <p>
+          This operation is O(n), because preserving the source requires inserting the elements into separate target nodes.
+        </p>
+
+        <h2>Where splicing is useful</h2>
+        <p>
+          Explicit splicing is useful when a program builds intermediate sequences that no longer need independent ownership.
+          Examples include combining staged results, joining partitions, merging list-producing workflows, and reducing several
+          temporary lists into one final list.
+        </p>
+        <p>
+          It is not a universal replacement for <code>ArrayList</code>. Indexed access retains linked-list complexity, instances
+          are mutable and not thread-safe, and splicing is intentionally destructive. The optimization is valuable only when
+          the ownership model and access pattern match it.
+        </p>
+
+        <h2>The broader API-design lesson</h2>
+        <p>
+          Sometimes an operation is theoretically cheap at the data-structure level but cannot be added transparently to an
+          existing abstraction because its semantics differ.
+        </p>
+        <p>
+          In this case, O(1) concatenation is not a faster implementation of <code>addAll</code>. It is a different operation
+          with a different responsibility boundary: <strong>copying preserves the source; splicing transfers ownership.</strong>
+        </p>
+
+        <p class="article-reference">
+          <strong>Project:</strong>
+          <a href="https://github.com/j-util/splice-list">splice-list on GitHub</a> ·
+          <a href="https://central.sonatype.com/artifact/io.github.j-util/splice-list">Maven Central</a>
+        </p>
+
+        <p class="article-origin">
+          <a href="https://www.linkedin.com/posts/karenbarseghyan_maven-repository-iogithubj-util-splice-list-share-7482520297082916865-fHMD/?utm_source=share&amp;utm_medium=member_desktop&amp;rcm=ACoAAAa-OIIB1QdCDl6TmmKfLZCe9K5zQ2ydsH4">View the original LinkedIn post</a>
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="container footer">
+    <p>© <span id="year"></span> Karen Barseghyan</p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
