@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Incremental InputStream Processing in Java — Karen Barseghyan</title>
-  <meta name="description" content="How inputstream-processor-core separates format parsing, item consumption, failure policy, and stream ownership for incremental Java InputStream processing.">
+  <title>Protocol- and Format-Agnostic InputStream Processing in Java — Karen Barseghyan</title>
+  <meta name="description" content="How inputstream-processor-core enables protocol- and format-agnostic incremental Java InputStream processing with bounded-memory potential and lower time-to-first-item.">
   <meta name="author" content="Karen Barseghyan">
   <link rel="canonical" href="https://k-barseghyan.github.io/articles/incremental-inputstream-processing.html">
   <link rel="stylesheet" href="../styles.css">
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Incremental InputStream Processing in Java">
-  <meta property="og:description" content="A small format-neutral Java core that separates parsing, consumption, failure policy, and stream ownership.">
+  <meta property="og:title" content="Protocol- and Format-Agnostic InputStream Processing in Java">
+  <meta property="og:description" content="A dependency-free Java core for incremental processing with explicit parsing, ownership, memory, and failure boundaries.">
   <meta property="og:url" content="https://k-barseghyan.github.io/articles/incremental-inputstream-processing.html">
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "Incremental InputStream Processing in Java",
-    "description": "How inputstream-processor-core separates format parsing, item consumption, failure policy, and stream ownership for incremental Java InputStream processing.",
+    "headline": "Protocol- and Format-Agnostic InputStream Processing in Java",
+    "description": "How inputstream-processor-core enables protocol- and format-agnostic incremental Java InputStream processing with bounded-memory potential and lower time-to-first-item.",
     "datePublished": "2026-07-20",
     "dateModified": "2026-07-20",
     "author": {
@@ -30,11 +30,16 @@
     "mainEntityOfPage": "https://k-barseghyan.github.io/articles/incremental-inputstream-processing.html",
     "keywords": [
       "Java",
+      "Java library",
       "InputStream",
       "incremental processing",
-      "streaming",
+      "streaming processing",
+      "protocol agnostic",
+      "format agnostic",
       "bounded memory",
-      "parser design",
+      "memory efficient",
+      "time to first item",
+      "Maven Central",
       "inputstream-processor-core"
     ]
   }
@@ -57,9 +62,9 @@
     <article class="article-page container">
       <header class="article-header">
         <p class="eyebrow">Java streaming</p>
-        <h1>Incremental InputStream Processing in Java</h1>
+        <h1>Protocol- and Format-Agnostic InputStream Processing in Java</h1>
         <p class="article-subtitle">
-          Separating format parsing, item processing, failure policy, and stream ownership in a small dependency-free core.
+          A dependency-free core for processing items incrementally with explicit parsing, ownership, memory, and failure boundaries.
         </p>
         <p class="article-meta">Karen Barseghyan · July 20, 2026</p>
       </header>
@@ -70,7 +75,7 @@
           read the complete content, deserialize it into a collection, and only then begin handling the items.
         </p>
         <p>
-          That model is convenient, but it couples three separate concerns: reading the transport stream,
+          That model is convenient, but it couples three separate concerns: obtaining the byte stream,
           understanding the data format, and executing application logic. It also delays the first useful result
           and may retain far more data than the application actually needs.
         </p>
@@ -82,8 +87,29 @@
           has arrived or been parsed.
         </p>
         <p>
-          The core should not need to know whether the stream contains JSON objects, CSV rows, XML elements, text lines,
-          or a custom binary format. Those are parsing concerns, not processing concerns.
+          The core is protocol-agnostic because protocol handling happens before its boundary. HTTP clients, file APIs,
+          sockets, cloud-storage SDKs, archive readers, and other sources can all provide an <code>InputStream</code>.
+          The library neither knows nor needs to know how that stream was obtained.
+        </p>
+        <p>
+          It is also format-agnostic. The stream may contain JSON objects, CSV rows, XML elements, text lines,
+          or a custom binary representation. Those are parser responsibilities, not processor responsibilities.
+        </p>
+
+        <h2>Memory use and time-to-first-item</h2>
+        <p>
+          A fully buffered workflow must usually finish reading and often finish parsing before application processing begins.
+          An incremental parser can emit the first logical item as soon as enough bytes are available to recognize it.
+          This can reduce <strong>time-to-first-item</strong> because useful work starts before the complete payload is consumed.
+        </p>
+        <p>
+          The same model can keep memory usage low because the core does not retain the complete input or the complete sequence
+          of emitted items. Instead, each item can be processed and released before the next one arrives.
+        </p>
+        <p>
+          These are architectural properties rather than unconditional benchmark guarantees. The benefit depends on the parser
+          reading incrementally and on the consumer not retaining every emitted item. A parser that buffers the whole stream,
+          or a consumer that accumulates all results, recreates the original memory and latency characteristics.
         </p>
 
         <h2>Three responsibility boundaries</h2>
@@ -137,7 +163,8 @@ try (InputStream input = Files.newInputStream(path)) {
 }</code></pre>
 
         <p>
-          The core has no third-party runtime dependencies and supports Java 8 or later.
+          The Java library has no third-party runtime dependencies, supports Java 8 or later,
+          and is published on Maven Central.
         </p>
 
         <h2>A line-oriented parser</h2>
