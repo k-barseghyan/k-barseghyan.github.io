@@ -281,6 +281,21 @@ code {
   font-size: 0.92em;
 }
 
+pre {
+  max-width: 760px;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  padding: 1.2rem 1.3rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #efefec;
+  line-height: 1.55;
+}
+
+pre code {
+  font-size: 0.9rem;
+}
+
 @media (max-width: 720px) {
   .nav {
     align-items: flex-start;
