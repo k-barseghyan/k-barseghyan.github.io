@@ -389,10 +389,11 @@
         <article class="card">
           <h3>performance-lab</h3>
           <p>
-            <strong>Active work.</strong> A reproducible JMH workspace for comparing streaming
-            and materialized processing, and row-oriented collections with columnar projections.
-            Early experiments suggest lower memory use for streaming and faster selected-column
-            processing with columnar storage; controlled evidence and documented results will follow.
+            <strong>Active work.</strong> A reproducible JMH workspace comparing
+            <code>inputstream-processor-core</code> and <code>columnar-projection-store</code>
+            against standard Java <code>ArrayList</code> baselines: streaming versus full
+            materialization, and columnar reduction versus row-oriented storage. Early experiments
+            are promising; controlled evidence and documented results will follow.
           </p>
           <div class="card-links">
             <a href="https://github.com/j-util/performance-lab">GitHub</a>
