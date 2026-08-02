@@ -51,7 +51,6 @@
       <div class="nav-links">
         <a href="#journey">Journey</a>
         <a href="#projects">Projects</a>
-        <a href="#experiments">Experiments</a>
         <a href="#articles">Articles</a>
         <a href="#contact">Contact</a>
       </div>
@@ -264,8 +263,6 @@
             explores O(1) list concatenation through structural splicing.
             <a href="https://github.com/j-util/inputstream-processor-core">inputstream-processor-core</a>
             processes items incrementally without materialising an entire input first.
-            <a href="https://github.com/j-util/optional-map">optional-map</a> is deliberately
-            smaller and more playful: an idea implemented for the pleasure of exploring it properly.
           </p>
         </div>
 
@@ -323,104 +320,114 @@
         </div>
       </div>
 
-      <div class="grid">
-        <article class="card">
-          <h3>splice-list</h3>
-          <p>
-            A Java <code>List</code>-compatible collection with explicit O(1)
-            whole-list splicing without element copying.
-          </p>
-          <div class="card-links">
-            <a href="https://github.com/j-util/splice-list">GitHub</a>
-            <a href="https://mvnrepository.com/artifact/io.github.j-util/splice-list">Maven</a>
-          </div>
-        </article>
+      <div class="project-groups">
+        <div class="project-group">
+          <h3 class="project-group-title">Data-oriented</h3>
+          <div class="grid">
+            <article class="card">
+              <h4>inputstream-processor-core</h4>
+              <p>
+                A protocol- and format-agnostic Java core for incremental item processing,
+                with bounded-memory potential and lower time-to-first-item.
+              </p>
+              <div class="card-links">
+                <a href="https://github.com/j-util/inputstream-processor-core">GitHub</a>
+                <a href="https://central.sonatype.com/artifact/io.github.j-util/inputstream-processor-core">Maven</a>
+              </div>
+            </article>
 
-        <article class="card">
-          <h3>inputstream-processor-core</h3>
-          <p>
-            A protocol- and format-agnostic Java core for incremental item processing,
-            with bounded-memory potential and lower time-to-first-item.
-          </p>
-          <div class="card-links">
-            <a href="https://github.com/j-util/inputstream-processor-core">GitHub</a>
-            <a href="https://central.sonatype.com/artifact/io.github.j-util/inputstream-processor-core">Maven</a>
-          </div>
-        </article>
+            <article class="card">
+              <h4>columnar-projection-store</h4>
+              <p>
+                An annotation-driven Java library for generated columnar storage of client-defined
+                projections, keeping selected fields in column arrays while preserving typed access
+                through projection views.
+              </p>
+              <div class="card-links">
+                <a href="https://github.com/j-util/columnar-projection-store">GitHub</a>
+                <a href="https://central.sonatype.com/artifact/io.github.j-util/columnar-projection-store">Maven</a>
+              </div>
+            </article>
 
-        <article class="card">
-          <h3>ai-document-assistant</h3>
-          <p>
-            <strong>RAG demo application.</strong> A compact, local-first demonstration
-            of document ingestion, vector retrieval, and source-grounded question answering
-            using FastAPI, Ollama, Qdrant, and Docker.
-          </p>
-          <div class="card-links">
-            <a href="https://github.com/k-barseghyan/ai-document-assistant">GitHub</a>
-          </div>
-        </article>
+            <article class="card">
+              <h4>reduction-store</h4>
+              <p>
+                <strong>In progress.</strong> A small Java library for incremental reduction
+                over incoming objects, maintaining one client-defined state per reduction and
+                generating strongly typed accessors for current results without rescanning data.
+              </p>
+              <div class="card-links">
+                <a href="https://github.com/j-util/reductions-store">GitHub</a>
+              </div>
+            </article>
 
-        <article class="card">
-          <h3>version-gate</h3>
-          <p>
-            <strong>In progress.</strong> A standalone service for coordinating, storing,
-            and atomically publishing immutable snapshots assembled from distributed data
-            sources. It is designed around explicit client-managed and coordinated-quiescence
-            consistency policies.
-          </p>
-          <div class="card-links">
-            <a href="https://github.com/k-barseghyan/version-gate">GitHub</a>
+            <article class="card">
+              <h4>splice-list</h4>
+              <p>
+                A Java <code>List</code>-compatible collection with explicit O(1)
+                whole-list splicing without element copying.
+              </p>
+              <div class="card-links">
+                <a href="https://github.com/j-util/splice-list">GitHub</a>
+                <a href="https://mvnrepository.com/artifact/io.github.j-util/splice-list">Maven</a>
+              </div>
+            </article>
           </div>
-        </article>
+        </div>
 
-        <article class="card">
-          <h3>columnar-projection-store</h3>
-          <p>
-            An annotation-driven Java library for generated columnar storage of client-defined
-            projections, keeping selected fields in column arrays while preserving typed access
-            through projection views.
-          </p>
-          <div class="card-links">
-            <a href="https://github.com/j-util/columnar-projection-store">GitHub</a>
-            <a href="https://central.sonatype.com/artifact/io.github.j-util/columnar-projection-store">Maven</a>
+        <div class="project-group">
+          <h3 class="project-group-title">Concurrency</h3>
+          <div class="grid">
+            <article class="card">
+              <h4>version-gate</h4>
+              <p>
+                <strong>In progress.</strong> A standalone service for coordinating, storing,
+                and atomically publishing immutable snapshots assembled from distributed data
+                sources. It is designed around explicit client-managed and coordinated-quiescence
+                consistency policies.
+              </p>
+              <div class="card-links">
+                <a href="https://github.com/k-barseghyan/version-gate">GitHub</a>
+              </div>
+            </article>
           </div>
-        </article>
+        </div>
 
-        <article class="card">
-          <h3>performance-lab</h3>
-          <p>
-            <strong>Active work.</strong> A reproducible JMH workspace comparing
-            <code>inputstream-processor-core</code> and <code>columnar-projection-store</code>
-            against standard Java <code>ArrayList</code> baselines: streaming versus full
-            materialization, and columnar reduction versus row-oriented storage. Early experiments
-            are promising; controlled evidence and documented results will follow.
-          </p>
-          <div class="card-links">
-            <a href="https://github.com/j-util/performance-lab">GitHub</a>
+        <div class="project-group">
+          <h3 class="project-group-title">Benchmarks</h3>
+          <div class="grid">
+            <article class="card">
+              <h4>performance-lab</h4>
+              <p>
+                <strong>Active work.</strong> A reproducible JMH workspace comparing
+                <code>inputstream-processor-core</code> and <code>columnar-projection-store</code>
+                against standard Java <code>ArrayList</code> baselines: streaming versus full
+                materialization, and columnar reduction versus row-oriented storage. Early experiments
+                are promising; controlled evidence and documented results will follow.
+              </p>
+              <div class="card-links">
+                <a href="https://github.com/j-util/performance-lab">GitHub</a>
+              </div>
+            </article>
           </div>
-        </article>
-      </div>
-    </section>
+        </div>
 
-    <section id="experiments" class="section container">
-      <p class="eyebrow">Explorations</p>
-      <h2>Experiments</h2>
-      <p>
-        Focused Java experiments in API design, data structures, and concurrency.
-      </p>
-
-      <div class="grid">
-        <article class="card">
-          <h3>optional-map</h3>
-          <p>
-            A compact Java API experiment exploring <code>Optional</code>-returning
-            <code>Map</code> access and API expressiveness.
-          </p>
-          <div class="card-links">
-            <a href="https://github.com/j-util/optional-map">GitHub</a>
-            <a href="https://mvnrepository.com/artifact/io.github.j-util/optional-map">Maven</a>
+        <div class="project-group">
+          <h3 class="project-group-title">Demos</h3>
+          <div class="grid">
+            <article class="card">
+              <h4>ai-document-assistant</h4>
+              <p>
+                <strong>RAG demo application.</strong> A compact, local-first demonstration
+                of document ingestion, vector retrieval, and source-grounded question answering
+                using FastAPI, Ollama, Qdrant, and Docker.
+              </p>
+              <div class="card-links">
+                <a href="https://github.com/k-barseghyan/ai-document-assistant">GitHub</a>
+              </div>
+            </article>
           </div>
-        </article>
+        </div>
       </div>
     </section>
 
