@@ -180,6 +180,20 @@ h3 {
   gap: 1rem;
 }
 
+.project-group + .project-group { margin-top: 3rem; }
+
+.project-group-title {
+  margin-bottom: 1rem;
+  font-size: clamp(1.3rem, 2.5vw, 1.55rem);
+  letter-spacing: -0.02em;
+}
+
+.card h4 {
+  margin: 0 0 0.8rem;
+  font-size: 1.25rem;
+  line-height: 1.15;
+}
+
 .card {
   min-height: 230px;
   padding: 1.5rem;
