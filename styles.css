@@ -180,7 +180,7 @@ h3 {
   gap: 1rem;
 }
 
-.project-group + .project-group { margin-top: 3rem; }
+.project-group + .project-group { margin-top: 4rem; }
 
 .project-group-title {
   margin-bottom: 1rem;
