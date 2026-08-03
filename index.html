@@ -29,8 +29,14 @@
         "https://www.linkedin.com/in/karenbarseghyan",
         "https://github.com/k-barseghyan",
         "https://github.com/j-util",
-        "https://mvnrepository.com/artifact/io.github.j-util"
+        "https://central.sonatype.com/namespace/io.github.j-util"
       ],
+      "subjectOf": {
+        "@type": "DigitalDocument",
+        "name": "Karen Barseghyan CV",
+        "url": "https://k-barseghyan.github.io/Karen_Barseghyan_CV.pdf",
+        "encodingFormat": "application/pdf"
+      },
       "knowsAbout": [
         "Java",
         "Spring Boot",
@@ -38,6 +44,9 @@
         "Concurrency",
         "Microservices",
         "AWS",
+        "Amazon Redshift",
+        "Kafka",
+        "Data processing",
         "Performance engineering"
       ]
     }
@@ -68,9 +77,10 @@
       </p>
       <div class="actions">
         <a class="button primary" href="https://www.linkedin.com/in/karenbarseghyan">LinkedIn</a>
+        <a class="button" href="Karen_Barseghyan_CV.pdf" aria-label="Open Karen Barseghyan's CV as a PDF">CV (PDF)</a>
         <a class="button" href="https://github.com/k-barseghyan">GitHub</a>
         <a class="button" href="https://github.com/j-util">j-util</a>
-        <a class="button" href="https://mvnrepository.com/artifact/io.github.j-util">Maven artifacts</a>
+        <a class="button" href="https://central.sonatype.com/namespace/io.github.j-util">Maven Central</a>
       </div>
     </section>
 
@@ -259,10 +269,15 @@
           </p>
           <p>
             Through the j-util open-source initiative, I design and publish focused Java
-            libraries to Maven Central. <a href="https://github.com/j-util/splice-list">splice-list</a>
-            explores O(1) list concatenation through structural splicing.
+            libraries to Maven Central.
             <a href="https://github.com/j-util/inputstream-processor-core">inputstream-processor-core</a>
-            processes items incrementally without materialising an entire input first.
+            processes items incrementally without materialising an entire input first;
+            <a href="https://github.com/j-util/columnar-projection-store">columnar-projection-store</a>
+            generates typed, column-oriented in-memory stores;
+            <a href="https://github.com/j-util/reduction-store">reduction-store</a>
+            maintains client-defined aggregate states during ingestion; and
+            <a href="https://github.com/j-util/splice-list">splice-list</a>
+            explores O(1) whole-list transfer through structural splicing.
           </p>
         </div>
 
@@ -331,8 +346,8 @@
                 with bounded-memory potential and lower time-to-first-item.
               </p>
               <div class="card-links">
-                <a href="https://github.com/j-util/inputstream-processor-core">GitHub</a>
-                <a href="https://central.sonatype.com/artifact/io.github.j-util/inputstream-processor-core">Maven</a>
+                <a href="https://github.com/j-util/inputstream-processor-core">Source: j-util/inputstream-processor-core</a>
+                <a href="https://central.sonatype.com/artifact/io.github.j-util/inputstream-processor-core">Maven Central: inputstream-processor-core</a>
               </div>
             </article>
 
@@ -344,20 +359,21 @@
                 through projection views.
               </p>
               <div class="card-links">
-                <a href="https://github.com/j-util/columnar-projection-store">GitHub</a>
-                <a href="https://central.sonatype.com/artifact/io.github.j-util/columnar-projection-store">Maven</a>
+                <a href="https://github.com/j-util/columnar-projection-store">Source: j-util/columnar-projection-store</a>
+                <a href="https://central.sonatype.com/artifact/io.github.j-util/columnar-projection-store">Maven Central: columnar-projection-store</a>
               </div>
             </article>
 
             <article class="card">
               <h4>reduction-store</h4>
               <p>
-                <strong>In progress.</strong> A small Java library for incremental reduction
-                over incoming objects, maintaining one client-defined state per reduction and
-                generating strongly typed accessors for current results without rescanning data.
+                A Java 8 library that generates a strongly typed in-memory reduction store,
+                maintaining client-defined aggregate states incrementally without rescanning
+                input data or using runtime reflection.
               </p>
               <div class="card-links">
-                <a href="https://github.com/j-util/reductions-store">GitHub</a>
+                <a href="https://github.com/j-util/reduction-store">Source: j-util/reduction-store</a>
+                <a href="https://central.sonatype.com/artifact/io.github.j-util/reduction-store">Maven Central: reduction-store</a>
               </div>
             </article>
 
@@ -368,8 +384,8 @@
                 whole-list splicing without element copying.
               </p>
               <div class="card-links">
-                <a href="https://github.com/j-util/splice-list">GitHub</a>
-                <a href="https://mvnrepository.com/artifact/io.github.j-util/splice-list">Maven</a>
+                <a href="https://github.com/j-util/splice-list">Source: j-util/splice-list</a>
+                <a href="https://central.sonatype.com/artifact/io.github.j-util/splice-list">Maven Central: splice-list</a>
               </div>
             </article>
           </div>
@@ -387,7 +403,7 @@
                 consistency policies.
               </p>
               <div class="card-links">
-                <a href="https://github.com/k-barseghyan/version-gate">GitHub</a>
+                <a href="https://github.com/k-barseghyan/version-gate">Source: k-barseghyan/version-gate</a>
               </div>
             </article>
           </div>
@@ -400,13 +416,13 @@
               <h4>performance-lab</h4>
               <p>
                 <strong>Active work.</strong> A reproducible JMH workspace comparing
-                <code>inputstream-processor-core</code> and <code>columnar-projection-store</code>
-                against standard Java <code>ArrayList</code> baselines: streaming versus full
-                materialization, and columnar reduction versus row-oriented storage. Early experiments
-                are promising; controlled evidence and documented results will follow.
+                <code>inputstream-processor-core</code>, <code>columnar-projection-store</code>,
+                and <code>reduction-store</code> with ordinary Java <code>ArrayList</code>
+                baselines across streaming, materialization, traversal, and end-to-end reduction.
+                Early experiments are promising; controlled evidence and documented results will follow.
               </p>
               <div class="card-links">
-                <a href="https://github.com/j-util/performance-lab">GitHub</a>
+                <a href="https://github.com/j-util/performance-lab">Source: j-util/performance-lab</a>
               </div>
             </article>
           </div>
@@ -423,7 +439,7 @@
                 using FastAPI, Ollama, Qdrant, and Docker.
               </p>
               <div class="card-links">
-                <a href="https://github.com/k-barseghyan/ai-document-assistant">GitHub</a>
+                <a href="https://github.com/k-barseghyan/ai-document-assistant">Source: k-barseghyan/ai-document-assistant</a>
               </div>
             </article>
           </div>

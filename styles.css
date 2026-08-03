@@ -206,10 +206,13 @@ h3 {
 
 .card-links {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
   margin-top: 1.2rem;
   font-weight: 650;
 }
+
+.card-links a { overflow-wrap: anywhere; }
 
 .article-list {
   max-width: 780px;
