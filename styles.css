@@ -302,7 +302,7 @@ h3 {
   align-items: center;
   gap: 0.7rem;
   min-width: 0;
-  padding: 0.9rem 1rem;
+  padding: 0.55rem 0.9rem;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--surface);
@@ -322,13 +322,16 @@ h3 {
 }
 
 .contact-icon {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 18px;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
   fill: var(--accent);
 }
 
-.contact-link span { min-width: 0; }
+.contact-link span {
+  min-width: 0;
+  line-height: 1.35;
+}
 .contact-link strong,
 .contact-link small { display: block; }
 .contact-link strong { font-size: 0.95rem; }
