@@ -204,6 +204,11 @@ h3 {
 
 .card p { color: var(--muted); }
 
+.card-with-icon-links {
+  display: flex;
+  flex-direction: column;
+}
+
 .card-links {
   display: flex;
   gap: 1rem;
@@ -211,7 +216,11 @@ h3 {
   font-weight: 650;
 }
 
-.card-links-icons { gap: 0.65rem; }
+.card-links-icons {
+  gap: 0.65rem;
+  margin-top: auto;
+  padding-top: 1.2rem;
+}
 
 .card-icon-link {
   display: inline-flex;
