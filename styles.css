@@ -114,9 +114,7 @@ h3 {
 }
 
 .button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  display: inline-block;
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.67rem 1rem;
@@ -126,21 +124,10 @@ h3 {
   text-decoration: none;
 }
 
-.button:hover {
-  border-color: #bcbcb5;
-}
-
-.brand-icon {
-  width: 17px;
-  height: 17px;
-  flex: 0 0 17px;
-  object-fit: contain;
-}
-
-.brand-icon-central {
-  width: 18px;
-  height: 18px;
-  flex-basis: 18px;
+.button.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
 }
 
 .section {
@@ -222,20 +209,6 @@ h3 {
   gap: 1rem;
   margin-top: 1.2rem;
   font-weight: 650;
-}
-
-.card-links a,
-.brand-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.card-links .brand-icon,
-.brand-link .brand-icon {
-  width: 16px;
-  height: 16px;
-  flex-basis: 16px;
 }
 
 .article-list {
