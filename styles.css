@@ -328,6 +328,12 @@ h3 {
   fill: var(--accent);
 }
 
+.contact-icon-linkedin {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+}
+
 .contact-link span {
   min-width: 0;
   line-height: 1.35;
