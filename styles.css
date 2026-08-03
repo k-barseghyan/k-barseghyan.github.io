@@ -211,6 +211,39 @@ h3 {
   font-weight: 650;
 }
 
+.card-links-icons { gap: 0.65rem; }
+
+.card-icon-link {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  text-decoration: none;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.card-icon-link:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.card-icon-link:focus-visible {
+  outline: 3px solid rgba(31, 79, 122, 0.25);
+  outline-offset: 3px;
+}
+
+.card-link-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  object-fit: contain;
+}
+
 .article-list {
   max-width: 780px;
   padding-left: 1.25rem;
