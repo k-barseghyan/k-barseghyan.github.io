@@ -4,12 +4,17 @@
   const ENDPOINT = "https://portfolio-visit-notifier.karenbarseghyan.workers.dev/visit";
   const COOLDOWN_MS = 15 * 60 * 1000;
   const STORAGE_KEY = "portfolioVisitNotificationAt";
+  const OWNER_STORAGE_KEY = "portfolioOwner";
 
   window.addEventListener("load", () => {
     window.setTimeout(() => void notifyVisit(), 800);
   }, { once: true });
 
   async function notifyVisit() {
+    if (localStorage.getItem(OWNER_STORAGE_KEY) === "true") {
+      return;
+    }
+
     const now = Date.now();
     const previous = Number(localStorage.getItem(STORAGE_KEY) || 0);
     if (Number.isFinite(previous) && now - previous < COOLDOWN_MS) {
