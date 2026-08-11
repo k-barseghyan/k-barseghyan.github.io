@@ -282,12 +282,16 @@
             immutable snapshots assembled from multiple distributed components.
           </p>
           <p>
-            Through the j-util open-source initiative, I design and publish focused Java
-            libraries to Maven Central.
+            Through the j-util open-source initiative, I design focused Java libraries and
+            publish stable releases to Maven Central.
             <a href="https://github.com/j-util/inputstream-processor-core">inputstream-processor-core</a>
             processes items incrementally without materialising an entire input first;
+            <a href="https://github.com/j-util/parallel-range-processor">parallel-range-processor</a>
+            processes delimiter-framed records concurrently from range-addressable byte sources;
             <a href="https://github.com/j-util/columnar-projection-store">columnar-projection-store</a>
             generates typed, column-oriented in-memory stores;
+            <a href="https://github.com/j-util/columnar-projection-store-hardwood">columnar-projection-store-hardwood</a>
+            is an in-progress integration for loading Hardwood column batches directly into those stores;
             <a href="https://github.com/j-util/reduction-store">reduction-store</a>
             maintains client-defined aggregate states during ingestion; and
             <a href="https://github.com/j-util/splice-list">splice-list</a>
@@ -370,6 +374,22 @@
             </article>
 
             <article class="card card-with-icon-links">
+              <h4>parallel-range-processor</h4>
+              <p>
+                A Java 8 library for concurrently processing delimiter-framed records
+                from large, range-addressable byte sources through independent ranges.
+              </p>
+              <div class="card-links card-links-icons">
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/j-util/parallel-range-processor" aria-label="Open parallel-range-processor on GitHub" title="GitHub repository">
+                  <img src="https://img.shields.io/badge/GitHub-repository-2ea44f?logo=github&amp;logoColor=white" alt="GitHub repository" height="20">
+                </a>
+                <a target="_blank" rel="noopener noreferrer" href="https://central.sonatype.com/artifact/io.github.j-util/parallel-range-processor" aria-label="Open parallel-range-processor on Maven Central" title="Maven Central version">
+                  <img src="https://img.shields.io/maven-central/v/io.github.j-util/parallel-range-processor?label=Maven%20Central&amp;logo=apachemaven" alt="Maven Central version" height="20">
+                </a>
+              </div>
+            </article>
+
+            <article class="card card-with-icon-links">
               <h4>columnar-projection-store</h4>
               <p>
                 An annotation-driven Java library for generated columnar storage of client-defined
@@ -382,6 +402,20 @@
                 </a>
                 <a target="_blank" rel="noopener noreferrer" href="https://central.sonatype.com/artifact/io.github.j-util/columnar-projection-store" aria-label="Open columnar-projection-store on Maven Central" title="Maven Central version">
                   <img src="https://img.shields.io/maven-central/v/io.github.j-util/columnar-projection-store?label=Maven%20Central&amp;logo=apachemaven" alt="Maven Central version" height="20">
+                </a>
+              </div>
+            </article>
+
+            <article class="card card-with-icon-links">
+              <h4>columnar-projection-store-hardwood</h4>
+              <p>
+                <strong>In progress.</strong> Generated schema-specific loaders transfer
+                Hardwood column batches directly into columnar projection stores without
+                row objects, runtime reflection, or per-row <code>add()</code> calls.
+              </p>
+              <div class="card-links card-links-icons">
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/j-util/columnar-projection-store-hardwood" aria-label="Open columnar-projection-store-hardwood on GitHub" title="GitHub repository">
+                  <img src="https://img.shields.io/badge/GitHub-repository-2ea44f?logo=github&amp;logoColor=white" alt="GitHub repository" height="20">
                 </a>
               </div>
             </article>
