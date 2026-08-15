@@ -82,6 +82,15 @@ a {
 
 .hero { padding-block: 7rem 5rem; }
 
+.hero-photo {
+  display: block;
+  width: min(100%, 240px);
+  height: auto;
+  margin: 0 0 2.25rem;
+  border-radius: 18px;
+  box-shadow: 0 12px 34px rgba(22, 22, 22, 0.14);
+}
+
 .eyebrow {
   margin: 0 0 0.7rem;
   color: var(--accent);
